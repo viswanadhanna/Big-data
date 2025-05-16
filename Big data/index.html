@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Predictor - Windows Compatible</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            margin: 0 auto;
+            margin-top: 15px;
+            border-radius: 10px;
+            animation: expandLine 1s ease-out forwards;
+            transform-origin: center;
+        }
+        
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            flex: 0 0 48%;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 0 0 100%;
+            }
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .button-container {
+            text-align: center;
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+        }
+        
+        button:hover {
+            box-shadow: 0 7px 10px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+        }
+        
+        button i {
+            margin-right: 10px;
+        }
+        
+        button .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #result {
+            margin-top: 40px;
+            padding: 25px;
+            border-radius: 10px;
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .delay-yes {
+            background: linear-gradient(to right, #ffeeee, #ffdddd);
+            border-left: 5px solid var(--danger-color);
+        }
+        
+        .delay-no {
+            background: linear-gradient(to right, #efffef, #ddffdd);
+            border-left: 5px solid var(--success-color);
+        }
+        
+        #resultHeading {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        #resultHeading i {
+            margin-right: 15px;
+            font-size: 28px;
+        }
+        
+        .statusIcon-delay {
+            color: var(--danger-color);
+        }
+        
+        .statusIcon-ontime {
+            color: var(--success-color);
+        }
+        
+        .probability-section {
+            margin: 25px 0;
+        }
+        
+        .probability-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .probability-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #f1c40f, #e74c3c);
+            width: 0;
+            transition: width 1s ease-in-out;
+        }
+        
+        .probability-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .probability-value {
+            font-weight: bold;
+            font-size: 24px;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+        
+        .cause-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-top: 25px;
+        }
+        
+        .cause-info h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cause-info h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .main-cause {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ecf0f1;
+        }
+        
+        .cause-breakdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .cause-item {
+            flex: 1 1 calc(50% - 15px);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            color: white;
+            overflow: hidden;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        @media (max-width: 600px) {
+            .cause-item {
+                flex: 1 1 100%;
+            }
+        }
+        
+        .cause-item-carrier {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .cause-item-weather {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+        }
+        
+        .cause-item-nas {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .cause-item-late {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .cause-item .cause-label {
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 1;
+        }
+        
+        .cause-item .cause-percentage {
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .cause-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 0;
+            transition: width 1.2s ease;
+        }
+        
+        .cause-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            opacity: 0.2;
+        }
+        
+        .flight-details {
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        
+        .flight-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Flight Delay Predictor</h1>
+            <p class="subtitle">Windows Compatible Version</p>
+        </div>
+        
+        <form id="delayForm">
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="airport"><i class="fas fa-plane-arrival"></i> Airport:</label>
+                    <select id="airport" required>
+                        <option value="">Select Airport</option>
+                        <option value="ATL">Atlanta (ATL)</option>
+                        <option value="ORD">Chicago O'Hare (ORD)</option>
+                        <option value="DFW">Dallas/Fort Worth (DFW)</option>
+                        <option value="LAX">Los Angeles (LAX)</option>
+                        <option value="JFK">New York JFK (JFK)</option>
+                        <option value="DEN">Denver (DEN)</option>
+                        <option value="SFO">San Francisco (SFO)</option>
+                        <option value="LAS">Las Vegas (LAS)</option>
+                        <option value="SEA">Seattle (SEA)</option>
+                        <option value="MIA">Miami (MIA)</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="airline"><i class="fas fa-plane"></i> Airline:</label>
+                    <select id="airline" required>
+                        <option value="">Select Airline</option>
+                        <option value="AA">American Airlines (AA)</option>
+                        <option value="DL">Delta Air Lines (DL)</option>
+                        <option value="UA">United Airlines (UA)</option>
+                        <option value="WN">Southwest Airlines (WN)</option>
+                        <option value="B6">JetBlue Airways (B6)</option>
+                        <option value="AS">Alaska Airlines (AS)</option>
+                        <option value="NK">Spirit Airlines (NK)</option>
+                        <option value="F9">Frontier Airlines (F9)</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="day"><i class="fas fa-calendar-day"></i> Day:</label>
+                    <input type="number" id="day" min="1" max="31" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="month"><i class="fas fa-calendar-alt"></i> Month:</label>
+                    <select id="month" required>
+                        <option value="">Select Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="year"><i class="fas fa-calendar-check"></i> Year:</label>
+                    <input type="number" id="year" min="2023" max="2030" value="2023" required>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button type="submit">
+                    <div class="spinner"></div>
+                    <i class="fas fa-search"></i> Predict Delay
+                </button>
+            </div>
+        </form>
+        
+        <div id="result">
+            <div class="flight-details">
+                <i class="fas fa-info-circle flight-icon"></i>
+                <span id="flightInfo"></span>
+            </div>
+            
+            <h2 id="resultHeading"></h2>
+            <p id="resultText"></p>
+            
+            <div class="probability-section">
+                <h3>Delay Probability</h3>
+                <div class="probability-value"><span id="probability">0%</span></div>
+                <div class="probability-bar">
+                    <div class="probability-fill" id="probabilityFill"></div>
+                </div>
+                <div class="probability-label">
+                    <span>Low Risk</span>
+                    <span>High Risk</span>
+                </div>
+            </div>
+            
+            <div id="causeContainer" class="cause-info">
+                <h3><i class="fas fa-exclamation-triangle"></i> Delay Analysis</h3>
+                <div class="main-cause">
+                    Likely cause: <span id="delayCause"></span>
+                </div>
+                
+                <div class="cause-breakdown">
+                    <div class="cause-item cause-item-carrier">
+                        <div class="cause-icon"><i class="fas fa-plane"></i></div>
+                        <div class="cause-label">Carrier Issues</div>
+                        <div class="cause-percentage" id="carrierPct">0%</div>
+                        <div class="cause-bar" id="carrierBar"></div>
+                    </div>
+                    
+                    <div class="cause-item cause-item-weather">
+                        <div class="cause-icon"><i class="fas fa-cloud-rain"></i></div>
+                        <div class="cause-label">Weather</div>
+                        <div class="cause-percentage" id="weatherPct">0%</div>
+                        <div class="cause-bar" id="weatherBar"></div>
+                    </div>
+                    
+                    <div class="cause-item cause-item-nas">
+                        <div class="cause-icon"><i class="fas fa-route"></i></div>
+                        <div class="cause-label">National Aviation System</div>
+                        <div class="cause-percentage" id="nasPct">0%</div>
+                        <div class="cause-bar" id="nasBar"></div>
+                    </div>
+                    
+                    <div class="cause-item cause-item-late">
+                        <div class="cause-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="cause-label">Late Aircraft</div>
+                        <div class="cause-percentage" id="latePct">0%</div>
+                        <div class="cause-bar" id="lateBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isPredicting = false;
+        let predictionCache = {};  // Cache to store previous predictions
+
+        document.getElementById('delayForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (isPredicting) {
+                return;
+            }
+            
+            const airport = document.getElementById('airport').value;
+            const airline = document.getElementById('airline').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            // Create a cache key from the form inputs
+            const cacheKey = `${airport}-${airline}-${day}-${month}-${year}`;
+            
+            // Check if we already have this prediction cached
+            if (predictionCache[cacheKey]) {
+                displayPrediction(predictionCache[cacheKey]);
+                return;
+            }
+            
+            isPredicting = true;
+            
+            // Show loading state
+            const button = document.querySelector('button');
+            const spinner = document.querySelector('.spinner');
+            const buttonIcon = button.querySelector('i');
+            const originalText = button.textContent.trim();
+            
+            buttonIcon.style.display = 'none';
+            spinner.style.display = 'block';
+            button.textContent = '';
+            button.appendChild(spinner);
+            button.appendChild(document.createTextNode(' Processing...'));
+            button.disabled = true;
+            
+            // Send data to backend API
+            fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    airport: airport,
+                    airline: airline,
+                    day: day,
+                    month: month,
+                    year: year
+                }),
+            })
+            .then(response => response.json())
+            .then(prediction => {
+                // Reset button
+                spinner.style.display = 'none';
+                buttonIcon.style.display = 'inline-block';
+                button.textContent = '';
+                button.appendChild(buttonIcon);
+                button.appendChild(document.createTextNode(' ' + originalText.split(' ').slice(1).join(' ')));
+                button.disabled = false;
+                isPredicting = false;
+                
+                // Cache the prediction
+                predictionCache[cacheKey] = prediction;
+                
+                // Display result
+                displayPrediction(prediction);
+            })
+            .catch(error => {
+                // Handle errors
+                spinner.style.display = 'none';
+                buttonIcon.style.display = 'inline-block';
+                button.textContent = '';
+                button.appendChild(buttonIcon);
+                button.appendChild(document.createTextNode(' ' + originalText.split(' ').slice(1).join(' ')));
+                button.disabled = false;
+                isPredicting = false;
+                console.error('Error:', error);
+                alert('An error occurred while making the prediction. Please try again.');
+            });
+        });
+        
+        function displayPrediction(prediction) {
+            const airport = document.getElementById('airport').value;
+            const airline = document.getElementById('airline').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            // Set flight info
+            const airportName = document.getElementById('airport').options[document.getElementById('airport').selectedIndex].text;
+            const airlineName = document.getElementById('airline').options[document.getElementById('airline').selectedIndex].text;
+            const monthName = document.getElementById('month').options[document.getElementById('month').selectedIndex].text;
+            document.getElementById('flightInfo').textContent = `${airlineName} flight at ${airportName} on ${monthName} ${day}, ${year}`;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            if (prediction.isDelayed) {
+                resultDiv.className = 'delay-yes';
+                document.getElementById('resultHeading').innerHTML = 
+                    '<i class="fas fa-exclamation-circle statusIcon-delay"></i> Delay Expected';
+                document.getElementById('resultText').textContent = 
+                    `Flight from ${airport} with ${airline} on ${month}/${day}/${year} is likely to be delayed.`;
+                document.getElementById('causeContainer').style.display = 'block';
+                document.getElementById('resultHeading').classList.add('pulse');
+                setTimeout(() => document.getElementById('resultHeading').classList.remove('pulse'), 2000);
+            } else {
+                resultDiv.className = 'delay-no';
+                document.getElementById('resultHeading').innerHTML = 
+                    '<i class="fas fa-check-circle statusIcon-ontime"></i> On-Time Expected';
+                document.getElementById('resultText').textContent = 
+                    `Flight from ${airport} with ${airline} on ${month}/${day}/${year} is likely to be on time.`;
+                document.getElementById('causeContainer').style.display = 'none';
+            }
+            
+            // Set probability
+            const probPct = Math.round(prediction.probability * 100);
+            document.getElementById('probability').textContent = probPct + '%';
+            
+            // Animate probability fill with slight delay
+            setTimeout(() => {
+                document.getElementById('probabilityFill').style.width = probPct + '%';
+            }, 200);
+            
+            // Set cause details with animations
+            document.getElementById('delayCause').textContent = prediction.cause;
+            
+            const delays = [
+                { id: 'carrier', value: prediction.causeBreakdown.carrier },
+                { id: 'weather', value: prediction.causeBreakdown.weather },
+                { id: 'nas', value: prediction.causeBreakdown.nas },
+                { id: 'late', value: prediction.causeBreakdown.lateAircraft }
+            ];
+            
+            // Sort by value for better visual effect
+            delays.sort((a, b) => b.value - a.value);
+            
+            // Apply with staggered animations
+            delays.forEach((item, index) => {
+                const pct = Math.round(item.value * 100);
+                document.getElementById(`${item.id}Pct`).textContent = pct + '%';
+                
+                // Animate bars with staggered delay
+                setTimeout(() => {
+                    document.getElementById(`${item.id}Bar`).style.width = pct + '%';
+                }, 300 + (index * 200));
+            });
+        }
+    </script>
+</body>
+</html> 

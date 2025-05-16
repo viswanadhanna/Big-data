@@ -1,0 +1,82 @@
+{
+  "ATL_DL": {
+    "arr_flights": 10500.0,
+    "arr_del15": 950.0,
+    "carrier_ct": 150.0,
+    "weather_ct": 420.0,
+    "nas_ct": 280.0,
+    "late_aircraft_ct": 100.0
+  },
+  "JFK_AA": {
+    "arr_flights": 5200.0,
+    "arr_del15": 750.0,
+    "carrier_ct": 450.0,
+    "weather_ct": 100.0,
+    "nas_ct": 150.0,
+    "late_aircraft_ct": 50.0
+  },
+  "ORD_UA": {
+    "arr_flights": 8800.0,
+    "arr_del15": 920.0,
+    "carrier_ct": 320.0,
+    "weather_ct": 390.0,
+    "nas_ct": 180.0,
+    "late_aircraft_ct": 30.0
+  },
+  "LAX_WN": {
+    "arr_flights": 6200.0,
+    "arr_del15": 480.0,
+    "carrier_ct": 190.0,
+    "weather_ct": 70.0,
+    "nas_ct": 180.0,
+    "late_aircraft_ct": 40.0
+  },
+  "DFW_AA": {
+    "arr_flights": 9100.0,
+    "arr_del15": 680.0,
+    "carrier_ct": 290.0,
+    "weather_ct": 210.0,
+    "nas_ct": 130.0,
+    "late_aircraft_ct": 50.0
+  },
+  "LAS_WN": {
+    "arr_flights": 4500.0,
+    "arr_del15": 320.0,
+    "carrier_ct": 110.0,
+    "weather_ct": 40.0,
+    "nas_ct": 120.0,
+    "late_aircraft_ct": 50.0
+  },
+  "DEN_UA": {
+    "arr_flights": 7600.0,
+    "arr_del15": 710.0,
+    "carrier_ct": 250.0,
+    "weather_ct": 290.0,
+    "nas_ct": 120.0,
+    "late_aircraft_ct": 50.0
+  },
+  "SFO_UA": {
+    "arr_flights": 5900.0,
+    "arr_del15": 680.0,
+    "carrier_ct": 190.0,
+    "weather_ct": 330.0,
+    "nas_ct": 110.0,
+    "late_aircraft_ct": 50.0
+  },
+  "SEA_AS": {
+    "arr_flights": 4800.0,
+    "arr_del15": 390.0,
+    "carrier_ct": 130.0,
+    "weather_ct": 190.0,
+    "nas_ct": 40.0,
+    "late_aircraft_ct": 30.0
+  },
+  "MIA_AA": {
+    "arr_flights": 5600.0,
+    "arr_del15": 490.0,
+    "carrier_ct": 220.0,
+    "weather_ct": 150.0,
+    "nas_ct": 80.0,
+    "late_aircraft_ct": 40.0
+  }
+} 
